@@ -240,7 +240,7 @@ print(solution(board,word))
 ```
 事实上，这个两行代码将在四个递归函数全部为False的时候再去执行。看下图我们来清晰的整理整个流程。
 
-![avatar](pic/backtracking.png)
+![avatar](./pic/backtracking.png)
 
 ## 3.所有题进行整合
 - [黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)
@@ -368,7 +368,7 @@ print(compute(7))
 ```
 答案就是把 while 改成 if 。while这个操作会让我们没法控制return的值在我们的循环中。下面是我画的图：
 
-![avatar](pic/backtrackinggame.png)
+![avatar](./pic/backtrackinggame.png)
 我们与例二的流程比较一下我们可以发现，同样是回溯，同样的模版。但是实际的流程是不同的，我想问问这种流程难道是固定的几种吗？这个问题值得探究探究。如果流程是固定的几种，那么意味着我们只需要熟悉所有的流程，我们做题将会像呼吸那么自然。如果并非如此的话，那就更加有趣了，这一切是如何发生的呢？【合作】
 
 
