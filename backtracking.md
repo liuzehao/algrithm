@@ -398,4 +398,70 @@ print(compute(7))
 
 - [1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode-cn.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)
 
+```python
+class Solution:
+    def getHappyString(self, n,k) -> str:
+        maxtmp=0
+        ss=["a","b","c"]
+        res=""
+        def compute(tmp):
+            nonlocal maxtmp
+            nonlocal res
+            if len(tmp)>1 and tmp[-1] ==tmp[-2]:
+                return
+            if len(tmp)==n:
+                maxtmp+=1
+                if maxtmp==k:
+                    res+=tmp
+                return
 
+            for i in ss:
+                tmp=tmp+i
+                compute(tmp)
+                tmp=tmp[:-1]
+        compute("")
+        return res
+
+ss=Solution()
+print(ss.getHappyString(1,4))
+
+```
+- 这道题上来愣了一下，第一步找到所有可能性，我一开始一直考虑要用双循环枚举，后来发现始终枚举不正确。这个问题就是犯了混用循环结构和递归结构的错误，属于对递归的循环性质理解不够，将这道题重新用循环结构重写（训练）。
+- 再一个问题是这个写法少了一次剪枝操作，事实上在找到第k个之后就可以退出程序了，我一时没找到怎么直接退出的办法，这个属于递归结构运行顺序没有理清楚，通过画出递归运行结构解决（训练）。
+- 这道题用到了两个全局变量，maxtmp，res。maxtmp用来记录数据，属于基操。res用来记录最后的结果属于偷懒，由于和上面一样的问题没有理清运行顺序，所以也就无法理出如何直接return出结果。（训练）
+- 从题目分析上来看，这道题可能有不用回溯，枚举分析找规律的方法更快的得到结果。但我尝试了一下始终没找到规律在哪里。（合作）
+
+- [131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
+
+这道题上来感觉有点难，由于不确定到底分成几部分，所以在没法枚举，第一步就遇上了困难。再就是隐隐发现有动态规划的影子，因为前面的分割如果不是回文的话，后面其实不用判断，如果前面部分证明是回文，那么总体有多少情况依赖于前面分割情况可能数。（合作）
+
+```python
+class Solution:
+    def partition(self, s):
+        def recall(s, tmp):
+            if not s:
+                res.append(tmp[:])
+                return
+
+            for i in range(1, len(s)+1):
+                if s[:i] == s[:i][::-1]:#反转字符串
+                    tmp.append(s[:i])
+                    recall(s[i:], tmp)
+                    tmp.pop()
+        
+        res = []
+        recall(s, [])
+        return res
+
+
+ss=Solution()
+print(ss.partition("aaba"))
+```
+还是采用回溯的套路来解一下。
+- 首先有一个反转字符串判断的技巧，if s[:i] == s[:i][::-1]:#反转字符串。这里就体现出python刷题的优越性了。
+- 就像开头所说，这题上来第一个问题是怎么分割需要好好理清楚。事实上，字符串分割通常方法就是，以步长作为循环方式。
+- 再一个问题，递归判断的时候什么作为结束方式呢？我们发现这题有两个判断条件，一个是递归回溯的位置的判断，一个是回文串的判断。这点相当关键，如果把两个判断理解成了只有一个回文串判断思路就乱了。为了理清思路，有必要画个回溯图。
+从下图可以看出，同样是回溯，其实由于第一步遍历条件，第二步判断回溯点的设置有区别，整体结构呈现是很不一样的。而这道题显然比之前的题都要复杂。这个复杂性往往体现在其在回溯过程中的回溯步骤的多少，一般回溯循环越多越难清晰思考。由于我们人类的思考的局限性，我们擅长与顺序思考，想象，而递归这种需要存储思考的问题（需要用栈来思考的问题），我们很难清晰想象。这就需要我们多多发展理论，多多训练思维能力了。
+
+  ![str](./pic/backtrackingstr.png)
+  - 这题很有研究价值，尝试改写成顺序结构（合作）
