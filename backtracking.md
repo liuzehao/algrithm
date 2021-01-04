@@ -267,7 +267,7 @@ print(solution(board,word))
 ![avatar](./pic/backtracking.png)
 
 ## 3.所有题进行整合
-- [黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)
+[黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)
 
 这道题和单词搜索具有很高的相似度，仅仅在判断条件上存在一点区别。
 
@@ -338,7 +338,7 @@ print(ss.getMaximumGold([[0,6,0],[5,8,7],[0,9,0]]))
 nonlocal:nonlocal关键字修饰变量后标识该变量是上一级函数中的局部变量，如果上一级函数中不存在该局部变量，nonlocal位置会发生错误。nonlocal关键字只能用于嵌套函数中，并且外层函数中定义了相应的局部变量，否则会发生错误
 global:global关键字修饰变量后标识该变量是全局变量，对该变量进行修改就是修改全局变量。global关键字可以用在任何地方，包括最上层函数中和嵌套函数中，即使之前未定义该变量，global修饰后也可以直接使用。（目前还没有摸清楚global的合适用法）
 
-- [1688. 比赛中的配对次数](https://leetcode-cn.com/problems/count-of-matches-in-tournament/)
+[1688. 比赛中的配对次数](https://leetcode-cn.com/problems/count-of-matches-in-tournament/)
 
 这道题很有意思，枚举几种情况就可以发现n-1直接就是结果。但也很有启发，启发点就在于如何利用回溯模版来解答这道题。同时由于这是一道简单题，leetcode上main的答案可以说大部分都是有问题的，他们的答案是对的，可实际上过程都是蒙对的（由于本题n-1就能对，很多人的答案都是一通骚操作，其实蒙了一个n-1）。可见很多人学习算法真的是在找“感觉”做题，完全没有章法，蒙对的题还以为是真的自己厉害。
 
@@ -396,7 +396,7 @@ print(compute(7))
 
 我们与例二的流程比较一下我们可以发现，同样是回溯，同样的模版。但是实际的流程是不同的，我想问问这种流程难道是固定的几种吗？这个问题值得探究探究。如果流程是固定的几种，那么意味着我们只需要熟悉所有的流程，我们做题将会像呼吸那么自然。如果并非如此的话，那就更加有趣了，这一切是如何发生的呢？【合作】
 
-- [1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode-cn.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)
+[1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode-cn.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)
 
 ```python
 class Solution:
@@ -431,7 +431,7 @@ print(ss.getHappyString(1,4))
 - 这道题用到了两个全局变量，maxtmp，res。maxtmp用来记录数据，属于基操。res用来记录最后的结果属于偷懒，由于和上面一样的问题没有理清运行顺序，所以也就无法理出如何直接return出结果。（训练）
 - 从题目分析上来看，这道题可能有不用回溯，枚举分析找规律的方法更快的得到结果。但我尝试了一下始终没找到规律在哪里。（合作）
 
-- [131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
+[131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
 
 这道题上来感觉有点难，由于不确定到底分成几部分，所以在没法枚举，第一步就遇上了困难。再就是隐隐发现有动态规划的影子，因为前面的分割如果不是回文的话，后面其实不用判断，如果前面部分证明是回文，那么总体有多少情况依赖于前面分割情况可能数。（合作）
 
@@ -466,3 +466,43 @@ print(ss.partition("aaba"))
   ![str](./pic/backtrackingstr.png)
 
 - 这题很有研究价值，尝试改写成顺序结构（合作）
+
+[842. 将数组拆分成斐波那契序列](https://leetcode-cn.com/problems/split-array-into-fibonacci-sequence/)
+
+这又是一道分割的题目，从上一题我们明白了一个问题，所有这种不定长分割的问题都是通过在回溯的过程中进行组合达成目的的。所以遍历条件就是步长。那么同上一题，判断条件也有两个，一个是回溯的判断一个是进入递归的条件判断。既然用回溯的方式来组合，那么其中一个判断条件就确立了，依然是判断null。关键是第二个判断条件。第二个判断条件帮助我们决定返回的值，这题与上一题的不同点在于，上一题的判断条件中仅仅需要保证每一个枚举值为回文就可以，而这题是需要对整体进行判断，保证整体符合斐波那契数列的规律。所以我们要在递归函数下面设置两个if。
+
+```python
+class Solution:
+    def splitIntoFibonacci(self, S):
+        res=[]
+        #判断是不是斐波那契数列
+        def fb(llist):
+            if len(llist)<3:
+                return False
+            for i in range(len(llist)-1):
+                if i+2<len(llist) and int(llist[i])+int(llist[i+1])!=int(llist[i+2]):
+                    return False
+            return True
+
+        def compute(S,tmp):
+            if not fb(tmp) and len(tmp)>2:
+                return
+            elif fb(tmp) and len(S)==0:
+                temp=[]
+                for i in tmp:
+                    temp.append(int(i))
+                res.append(temp)
+                return 
+            for l in range(1,len(S)+1):#这个+1操作很关键，如果不  +1，只有一个数的字符串“1”无法被添加到tmp里面
+                tmp.append(S[:l])
+                compute(S[l:],tmp)
+                tmp.pop()
+        compute(S,[])
+        return res[0]
+ss=Solution()
+S="1101111"
+print(ss.splitIntoFibonacci(S))
+```
+整体逻辑其实和上一题是差不多的。
+
+[17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
