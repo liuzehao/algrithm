@@ -11,6 +11,13 @@
 
 ## 2.例题1 全排列
 可重复的全排列，在这道题中，我们应该先完善递归核心部分。
+leetcode类似题：
+[字符串的排列](https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/)
+[电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
+[全排列 II
+](https://leetcode-cn.com/problems/permutations-ii/)
+[字母大小写全排列](https://leetcode-cn.com/problems/letter-case-permutation/)
+[括号生成](https://leetcode-cn.com/problems/generate-parentheses/)......
 
 2.1 核心结构
 - 首先先思考有哪些可能性
@@ -160,7 +167,7 @@ print(quan(nums))
 我们比较一下这份非递归代码和前面的递归代码，我们发现非递归代码需要两个循环。并且采用了stack这个结构来代替了递归栈的效果。认真的调试运行对比一下两份代码的效果，我们可以发现
 递归=循环+stack栈。同时，我们注意到我们把判断条件放在了循环中，而在递归程序中我们需要放在开始的位置，这是一个很大的区别。一般来讲我们总会想到在循环中做判断，而在程序开始做判断是一种反直觉的行为，所以说递归程序如果不多多练习是很容易写错的。在我们的算法训练时，要特别注意判断条件在两种写法中的区别，不然容易混着写导致解题错误。
 
-## 2.例题2 单词搜索
+## 2.例题2 [单词搜索](https://leetcode-cn.com/problems/word-search/)
 全排列是一种最典型的回溯算法的案例。其关键就在于开始所谈到的模版结构，核心关键在于：判断方式，枚举所有情况，添加递归这三点。事实上在三个需要考虑的点上，枚举所有情况是比较简单的。难得是设计一种好的方式来判断条件以及添加递归。
 下面是一种典型的思路，这种思路延续了上面的模版，但是却出现了一个难以解决的问题。
 
