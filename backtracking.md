@@ -62,15 +62,15 @@ RecursionError: maximum recursion depth exceeded while calling a Python object
 ```python
 def compute(llist):
     tmp=[]    #tmp用于记录符合条件的结果
-    def sum(temp):#temp用于递归过程中进行记录枚举结果
+    def summ(temp):#temp用于递归过程中进行记录枚举结果
         if len(temp)==len(llist):#判断
             tmp.append(temp[:])
             return
         for i in llist: #进行枚举
             temp.append(i) #加入枚举变量
-            sum(temp) #递归判断
+            summ(temp) #递归判断
             temp.pop() #剔除枚举变量
-    sum([])
+    summ([])
     return tmp
 print(compute([1,2,3]))
 
