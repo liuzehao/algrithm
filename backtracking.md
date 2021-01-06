@@ -9,13 +9,12 @@
         剔除枚举变量
 ```
 
-## 2.例题1 全排列
+## 2.例题1 [全排列](https://leetcode-cn.com/problems/permutations/)
 可重复的全排列，在这道题中，我们应该先完善递归核心部分。
 leetcode类似题：
 [字符串的排列](https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/)
 [电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
-[全排列 II
-](https://leetcode-cn.com/problems/permutations-ii/)
+[全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
 [字母大小写全排列](https://leetcode-cn.com/problems/letter-case-permutation/)
 [括号生成](https://leetcode-cn.com/problems/generate-parentheses/)......
 
@@ -97,52 +96,27 @@ print(compute([1,2,3]))
 
 ***附题2:再进一步，如果llist中包含重复数字，上面这种方法就不行了，输出为空，我们又要怎么办呢？***
 
-我们采用索引来进行回溯就可以。
-
+我们通过一个seen来去重就可以了。
 ```python
-def compute(llist):
+def compute(nums):
     tmp=[]
-    def sum(temp):
-        if len(temp)==len(llist):
-            tt=[]
-            for i in temp:   #这个地方把索引转换为原值
-                tt.append(llist[i])
-            tmp.append(tt)
+    def sum(st,temp):
+        if len(temp)==len(nums):
+            tmp.append(temp[:])
             return
-        for i in range(len(llist)):
-            if i in temp:
+        seen=set()
+        for i in range(len(st)):
+            if st[i] in seen:
                 continue
-            temp.append(i)
-            sum(temp)
+            seen.add(st[i])
+            temp.append(st[i])
+            sum(st[:i]+st[i+1:],temp)
             temp.pop()
-    sum([])
+    sum(nums,[])
     return tmp
-print(compute([1,2,2]))
+print(compute([1,2,3,4]))
 ```
-输出：[[1, 2, 2], [1, 2, 2], [2, 1, 2], [2, 2, 1], [2, 1, 2], [2, 2, 1]]
-这个时候我们发现有一些重复的，我们做一下去重就行。
 
-```python
-def compute(llist):
-    tmp=[]
-    def sum(temp):
-        if len(temp)==len(llist):
-            tt=[]
-            for i in temp:
-                tt.append(llist[i])
-            if tt not in tmp:# 去重复
-                tmp.append(tt)
-            return
-        for i in range(len(llist)):
-            if i in temp:
-                continue
-            temp.append(i)
-            sum(temp)
-            temp.pop()
-    sum([])
-    return list(tmp)
-print(compute([1,2,2]))
-```
 
 ***附题3:可能我们听过这样一个说法，所有的递归本质上都可以用循环来替代。那么这两者之间究竟有什么关系呢？我们将这道题改成非递归形式会怎么样？***
 
@@ -152,23 +126,31 @@ print(compute([1,2,2]))
 nums=[1,2,3]
 
 def quan(nums):
-    llist=[]
+    stack=[]
+    for t in nums:
+        stack.append(t)
     res=[]
-    nl=len(nums)
-    while len(res)<nl**nl:
-        for i in nums:
-            llist.append(i)
-            if len(llist)==len(nums):
-                res.append(llist[:])
-                llist.pop()
+    temp=[]
+    while stack:
+        node=stack.pop()
+        temp.append(node)
+        if node and len(temp)!=len(nums):
+            for i in nums:
+                stack.append(i)
+        if len(temp)==len(nums):
+            res.append(temp[:])
+            temp.pop()
+            if node==nums[0]: 
+                tnode=temp.pop()
+                while temp and tnode==nums[0]:
+                    tnode=temp.pop()
     return res
 print(quan(nums))
 ```
-我们比较一下这份非递归代码和前面的递归代码，我们发现非递归代码需要两个循环。并且采用了stack这个结构来代替了递归栈的效果。认真的调试运行对比一下两份代码的效果，我们可以发现
-递归=循环+stack栈。同时，我们注意到我们把判断条件放在了循环中，而在递归程序中我们需要放在开始的位置，这是一个很大的区别。一般来讲我们总会想到在循环中做判断，而在程序开始做判断是一种反直觉的行为，所以说递归程序如果不多多练习是很容易写错的。在我们的算法训练时，要特别注意判断条件在两种写法中的区别，不然容易混着写导致解题错误。
+我们比较一下这份非递归代码和前面的递归代码，我们发现非递归代码采用了stack来代替了系统中栈的效果，所以我们需要自己维护一个栈。这样的话我们需自己判断什么时候去添加什么时候去pop。事实上我在考虑pop的时候还是花了不少时间才调试正确，递归写法确实考虑问题简单不少。同时，我们注意到我们把判断条件放在了循环中，而在递归程序中我们需要放在开始的位置，这是一个很大的区别。一般来讲我们总会想到在循环中做判断，而在程序开始做判断是一种反直觉的行为，所以说递归程序如果不多多练习是很容易写错的。在我们的算法训练时，要特别注意判断条件在两种写法中的区别，不然容易混着写导致解题错误。
 
 ## 2.例题2 [单词搜索](https://leetcode-cn.com/problems/word-search/)
-全排列是一种最典型的回溯算法的案例。其关键就在于开始所谈到的模版结构，核心关键在于：判断方式，枚举所有情况，添加递归这三点。事实上在三个需要考虑的点上，枚举所有情况是比较简单的。难得是设计一种好的方式来判断条件以及添加递归。
+全排列是一种最典型的回溯算法的案例。其关键就在于开始所谈到的模版结构，核心关键在于：判断方式，枚举所有情况，添加递归这三点。事实上在三个需要考虑的点上，枚举所有情况是比较简单的。难的是设计一种好的方式来判断条件以及添加递归。
 下面是一种典型的思路，这种思路延续了上面的模版，但是却出现了一个难以解决的问题。
 
 2.1 核心结构
@@ -272,6 +254,38 @@ print(solution(board,word))
 事实上，这个两行代码将在四个递归函数全部为False的时候再去执行。看下图我们来清晰的整理整个流程。
 
 ![avatar](./pic/backtracking.png)
+
+## 例题3 [分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
+
+这道题上来感觉有点难，由于不确定到底分成几部分，所以在没法枚举，第一步就遇上了困难。再就是隐隐发现有动态规划的影子，因为前面的分割如果不是回文的话，后面其实不用判断，如果前面部分证明是回文，那么总体有多少情况依赖于前面分割情况可能数。（合作）
+
+```python
+class Solution:
+    def partition(self, s):
+        def recall(s, tmp):
+            if not s:
+                res.append(tmp[:])
+                return
+            for i in range(1, len(s)+1):
+                if s[:i] == s[:i][::-1]:#反转字符串
+                    tmp.append(s[:i])
+                    recall(s[i:], tmp)
+                    tmp.pop()
+        res = []
+        recall(s, [])
+        return res
+ss=Solution()
+print(ss.partition("aaba"))
+```
+还是采用回溯的套路来解一下。
+- 首先有一个反转字符串判断的技巧，if s[:i] == s[:i][::-1]:#反转字符串。这里就体现出python刷题的优越性了。
+- 就像开头所说，这题上来第一个问题是怎么分割需要好好理清楚。事实上，字符串分割通常方法就是，以步长作为循环方式。
+- 再一个问题，递归判断的时候什么作为结束方式呢？我们发现这题有两个判断条件，一个是递归回溯的位置的判断，一个是回文串的判断。这点相当关键，如果把两个判断理解成了只有一个回文串判断思路就乱了。为了理清思路，有必要画个回溯图。
+从下图可以看出，同样是回溯，其实由于第一步遍历条件，第二步判断回溯点的设置有区别，整体结构呈现是很不一样的。而这道题显然比之前的题都要复杂。这个复杂性往往体现在其在回溯过程中的回溯步骤的多少，一般回溯循环越多越难清晰思考。由于我们人类的思考的局限性，我们擅长与顺序思考，想象，而递归这种需要存储思考的问题（需要用栈来思考的问题），我们很难清晰想象。这就需要我们多多发展理论，多多训练思维能力了。
+
+  ![str](./pic/backtrackingstr.png)
+
+- 这题很有研究价值，尝试改写成顺序结构（合作）
 
 ## 3.所有题进行整合
 [黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)
@@ -438,45 +452,11 @@ print(ss.getHappyString(1,4))
 - 这道题用到了两个全局变量，maxtmp，res。maxtmp用来记录数据，属于基操。res用来记录最后的结果属于偷懒，由于和上面一样的问题没有理清运行顺序，所以也就无法理出如何直接return出结果。（训练）
 - 从题目分析上来看，这道题可能有不用回溯，枚举分析找规律的方法更快的得到结果。但我尝试了一下始终没找到规律在哪里。（合作）
 
-[131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
 
-这道题上来感觉有点难，由于不确定到底分成几部分，所以在没法枚举，第一步就遇上了困难。再就是隐隐发现有动态规划的影子，因为前面的分割如果不是回文的话，后面其实不用判断，如果前面部分证明是回文，那么总体有多少情况依赖于前面分割情况可能数。（合作）
-
-```python
-class Solution:
-    def partition(self, s):
-        def recall(s, tmp):
-            if not s:
-                res.append(tmp[:])
-                return
-
-            for i in range(1, len(s)+1):
-                if s[:i] == s[:i][::-1]:#反转字符串
-                    tmp.append(s[:i])
-                    recall(s[i:], tmp)
-                    tmp.pop()
-        
-        res = []
-        recall(s, [])
-        return res
-
-
-ss=Solution()
-print(ss.partition("aaba"))
-```
-还是采用回溯的套路来解一下。
-- 首先有一个反转字符串判断的技巧，if s[:i] == s[:i][::-1]:#反转字符串。这里就体现出python刷题的优越性了。
-- 就像开头所说，这题上来第一个问题是怎么分割需要好好理清楚。事实上，字符串分割通常方法就是，以步长作为循环方式。
-- 再一个问题，递归判断的时候什么作为结束方式呢？我们发现这题有两个判断条件，一个是递归回溯的位置的判断，一个是回文串的判断。这点相当关键，如果把两个判断理解成了只有一个回文串判断思路就乱了。为了理清思路，有必要画个回溯图。
-从下图可以看出，同样是回溯，其实由于第一步遍历条件，第二步判断回溯点的设置有区别，整体结构呈现是很不一样的。而这道题显然比之前的题都要复杂。这个复杂性往往体现在其在回溯过程中的回溯步骤的多少，一般回溯循环越多越难清晰思考。由于我们人类的思考的局限性，我们擅长与顺序思考，想象，而递归这种需要存储思考的问题（需要用栈来思考的问题），我们很难清晰想象。这就需要我们多多发展理论，多多训练思维能力了。
-
-  ![str](./pic/backtrackingstr.png)
-
-- 这题很有研究价值，尝试改写成顺序结构（合作）
 
 [842. 将数组拆分成斐波那契序列](https://leetcode-cn.com/problems/split-array-into-fibonacci-sequence/)
 
-这又是一道分割的题目，从上一题我们明白了一个问题，所有这种不定长分割的问题都是通过在回溯的过程中进行组合达成目的的。所以遍历条件就是步长。那么同上一题，判断条件也有两个，一个是回溯的判断一个是进入递归的条件判断。既然用回溯的方式来组合，那么其中一个判断条件就确立了，依然是判断null。关键是第二个判断条件。第二个判断条件帮助我们决定返回的值，这题与上一题的不同点在于，上一题的判断条件中仅仅需要保证每一个枚举值为回文就可以，而这题是需要对整体进行判断，保证整体符合斐波那契数列的规律。所以我们要在递归函数下面设置两个if。
+这又是一道分割的题目，从例3我们明白了一个问题，所有这种不定长分割的问题都是通过在回溯的过程中进行组合达成目的的。所以遍历条件就是步长。那么同上一题，判断条件也有两个，一个是回溯的判断一个是进入递归的条件判断。既然用回溯的方式来组合，那么其中一个判断条件就确立了，依然是判断null。关键是第二个判断条件。第二个判断条件帮助我们决定返回的值，这题与上一题的不同点在于，上一题的判断条件中仅仅需要保证每一个枚举值为回文就可以，而这题是需要对整体进行判断，保证整体符合斐波那契数列的规律。所以我们要在递归函数下面设置两个if。
 
 ```python
 class Solution:
