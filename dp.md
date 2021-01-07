@@ -17,3 +17,21 @@ print(longstr([10,9,25,37,101,18]))
 ```
 ## 题整合
 [俄罗斯套娃信封问题](https://leetcode-cn.com/problems/russian-doll-envelopes/)
+#这个解法超时了，需要优化
+```python
+class Solution:
+    def maxEnvelopes(self, envelopes):
+        if not envelopes:
+            return 0
+        envelopes.sort(key=lambda x: (x[0], -x[1]))
+        dp=[1 for i in range(len(envelopes))]
+
+        for t in range(len(envelopes)):
+            for z in range(t):
+                if envelopes[t][1]>envelopes[z][1] and envelopes[t][0]>envelopes[z][0]:
+                    dp[t]=max(dp[z]+1,dp[t])
+        return max(dp)
+
+ss=Solution()
+print(ss.maxEnvelopes([[4,5],[4,6],[6,7],[2,3],[1,1]]))
+```

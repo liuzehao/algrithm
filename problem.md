@@ -9,5 +9,8 @@
 待
 
 ## 动态规划
-### 1.
-
+### 1.python如何进行排序
+sort、sorted
+常见的lambda表达式：
+student = [['Tom', 'A', 20], ['Jack', 'C', 18], ['Andy', 'B', 11]]
+student.sort(key=lambda student: student[2])
