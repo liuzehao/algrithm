@@ -208,7 +208,7 @@ def solution(board,word):
     w=len(board)
     h=len(board[0])
     def compute(i,t,count):
-        if i>=w or t>=h or board[i][t]!=word[count]:
+        if i<0 or i>=w or t<0 or t>=h or board[i][t]!=word[count]:
             # print("no: "+board[i][t])
             return False
         if count==len(word)-1:
@@ -235,7 +235,7 @@ print(solution(board,word))
 ```python
     def compute(i,t,count):
     #判断部分，在函数进来的时候第一时间运行
-        if i>=w or t>=h or board[i][t]!=word[count]:
+        if i<0 or i>=w or t<0 or t>=h or board[i][t]!=word[count]:
             return False
         if count==len(word)-1:
             return True
