@@ -43,7 +43,22 @@ print(longstr([10,9,25,37,101,18]))
 [动态规划只需要求我们评估最优解是多少，最优解对应的具体解是什么并不要求。因此很适合应用于评估一个方案的效果](https://leetcode-cn.com/problems/permutations/solution/quan-pai-lie-hui-su-suan-fa-by-cherry-n1/)
 
 ## [例2 最长回文子序列](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)
+```python
+def longeststr(ss):
+    ls=len(ss)
+    dp=[[0 for i in range(ls)] for t in range(ls)]
+    for z in range(ls):
+        dp[z][z]=1
+    for i in range(ls-1,-1,-1):
+        for j in range(i+1,ls):
+            if ss[i]==ss[j]:
+                dp[i][j]= dp[i+1][j-1]+2
+            else:
+                dp[i][j]=max(dp[i+1][j],dp[i][j-1])
+    return dp[0][ls-1]
 
+print(longeststr("bbbab"))
+```
 
 
 ## 题整合
