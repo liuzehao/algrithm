@@ -25,4 +25,8 @@ sort、sorted
 student = [['Tom', 'A', 20], ['Jack', 'C', 18], ['Andy', 'B', 11]]
 student.sort(key=lambda student: student[2])
 
+### 2.map的用法
 
+### 3.lambda表达式
+
+### 什么时候以步长作为循环条件？猜想：子串步长，子序列for？目标两题回溯拆分都是子序列问题，符合猜想。

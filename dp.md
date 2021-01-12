@@ -41,7 +41,13 @@ print(longstr([10,9,25,37,101,18]))
 有一种错误观点：最值问题才用动态规划
 
 [动态规划只需要求我们评估最优解是多少，最优解对应的具体解是什么并不要求。因此很适合应用于评估一个方案的效果](https://leetcode-cn.com/problems/permutations/solution/quan-pai-lie-hui-su-suan-fa-by-cherry-n1/)
+
+## [例2 最长回文子序列](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)
+
+
+
 ## 题整合
+
 [俄罗斯套娃信封问题](https://leetcode-cn.com/problems/russian-doll-envelopes/)
 
 最先想到的解法，先把第一列排序一下，然后后一列最长子序列解一下。这个解法超时了，需要优化
@@ -77,4 +83,54 @@ class Solution:
 
 ss=Solution()
 print(ss.permute([1,2,3,4]))
+```
+最大子数组
+
+这题是中科院博士笔试的最后一题，典型的动态规划。相当于求一个包含正负数数组的最大子数组。跟最长子上升子序列很像。
+
+![最大子序列](./pic/longsonstr.png)
+核心代码就这样：
+```python
+def longzistr(nums):
+    dp=nums.copy()
+    for t in range(len(nums)):
+        for z in range(t):
+            dp[t]=max(nums[t],nums[t]+dp[z])
+    return max(dp)
+nums=[-10,10,-5,2,3]
+print(longzistr(nums))
+```
+修改以符合题意：
+```python
+C=[10,10,5,2,3]
+S=[-1,1,-1,1,1]
+def compute(C,S):
+    nums = list(map(lambda x,y:x*y,C,S))
+    dp=nums.copy()
+    for t in range(len(nums)):
+        for z in range(t):
+            dp[t]=max(nums[t],nums[t]+dp[z])
+    return max(dp)
+print(compute(C,S))
+``` 
+进一步，我们发现dp[i]的值只和dp[i-1]相关。也就是说：
+[-10,10,-5,2,3]
+这个数组的dp从上一种做法的dp为:
+[-10,10,5,12,15]
+还可以看作:
+[-10,10,15,12,15]
+```python
+C=[10,10,5,2,3]
+S=[-1,1,-1,1,1]
+def compute(C,S):
+    nums = list(map(lambda x,y:x*y,C,S))
+    dp0=nums[0]
+    temp=0
+    res=0
+    for t in range(1,len(nums)):
+        temp=max(nums[t],nums[t]+dp0)
+        dp0=temp
+        res=max(res,temp)
+    return res
+print(compute(C,S))
 ```
