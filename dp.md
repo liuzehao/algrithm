@@ -43,6 +43,8 @@ print(longstr([10,9,25,37,101,18]))
 [动态规划只需要求我们评估最优解是多少，最优解对应的具体解是什么并不要求。因此很适合应用于评估一个方案的效果](https://leetcode-cn.com/problems/permutations/solution/quan-pai-lie-hui-su-suan-fa-by-cherry-n1/)
 
 ## [例2 最长回文子序列](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)
+与上一题不一样，这题是二维动规。同时，我们将根据这题来学习状态压缩的方法。关于这题的具体分析可以参看：
+[这题的题解](https://leetcode-cn.com/problems/longest-palindromic-subsequence/solution/516-zui-chang-hui-wen-zi-xu-lie-by-ming-zhi-shan-y/)
 ```python
 def longeststr(ss):
     ls=len(ss)
@@ -60,6 +62,23 @@ def longeststr(ss):
 print(longeststr("bbbab"))
 ```
 
+下面主要来研究一下本体的状态压缩优化：
+```python
+    def longeststr(ss):
+        ls=len(ss)
+        dp=[1 for i in range(ls)]
+        for i in range(ls-2,-1,-1):
+            pre=0
+            for j in range(i+1,ls):
+                temp=dp[j]
+                if ss[i]==ss[j]:
+                    dp[j]=pre+2
+                else:
+                    dp[j]=max(dp[j],dp[j-1])
+                pre=temp
+        return dp[ls-1]
+    print(longeststr("bbbab"))
+```
 
 ## 题整合
 
@@ -109,10 +128,10 @@ print(ss.permute([1,2,3,4]))
 def longzistr(nums):
     dp=nums.copy()
     for t in range(len(nums)):
-        for z in range(t):
-            dp[t]=max(nums[t],nums[t]+dp[z])
+        dp[t]=max(nums[t],nums[t]+dp[t-1])
     return max(dp)
-nums=[-10,10,-5,2,3]
+nums=[-10,10,-5,2,3,100,-50]
+print(longzistr(nums))
 print(longzistr(nums))
 ```
 修改以符合题意：
@@ -123,8 +142,7 @@ def compute(C,S):
     nums = list(map(lambda x,y:x*y,C,S))
     dp=nums.copy()
     for t in range(len(nums)):
-        for z in range(t):
-            dp[t]=max(nums[t],nums[t]+dp[z])
+        dp[t]=max(nums[t],nums[t]+dp[t-1])
     return max(dp)
 print(compute(C,S))
 ``` 
