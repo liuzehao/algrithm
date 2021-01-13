@@ -79,6 +79,23 @@ print(longeststr("bbbab"))
         return dp[ls-1]
     print(longeststr("bbbab"))
 ```
+下面是李达的回溯解法：
+```python
+class Solution:
+    def longestPalindromeSubseq(self, s: str) -> int:
+        res = []
+        def func(st,temp):
+            if temp ==temp[::-1]:
+                res.append(len(temp))
+            if len(temp)==len(s):
+                return
+            for i in range(len(st)):
+                temp.append(st[i])
+                func(st[i+1:],temp)
+                temp.pop()
+        func(s,[])
+        return max(res)
+```
 
 ## 题整合
 
@@ -167,3 +184,45 @@ def compute(C,S):
     return res
 print(compute(C,S))
 ```
+
+### 2021.1.13 
+
+叶丽丽：[474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)
+
+
+
+李达: [指 Offer 63. 股票的最大利润](https://leetcode-cn.com/problems/gu-piao-de-zui-da-li-run-lcof/)
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        prices = [prices[i]-prices[i-1] for i in range(1,len(prices))]
+        dp = 0
+        res = 0
+        for i in range(len(prices)):
+            dp = max(dp+prices[i],0)
+            if dp>res:
+                res = dp
+        return res
+```
+
+
+### 2021.1.14
+刘泽豪：0-1背包
+题目描述：有n个物品，它们有各自的体积和价值，现有给定容量的背包，如何让背包里装入的物品具有最大的价值总和？
+输入参数：N和W分别是背包能装物体的数量和背包能装的重量。wt数组指的是物体的重量，val指的是对应的价值。
+```python
+def onezerobag(N,W,wt,val):
+    dp=[[0 for i in range(W+1)] for i in range(N+1)]
+    for i in range(1,N+1):
+        for w in range(1,W+1):
+            if w-wt[i-1]<0:
+                dp[i][w]=dp[i-1][w]
+            else:
+                dp[i][w]=max(dp[i-1][w-wt[i-1]]+val[i-1],dp[i-1][w])
+    return dp[N][W]
+print(onezerobag(3,4,[2,1,3],[4,2,3]))
+```
+动规的第一步是建立一种状态并且遍历状态，这种想法有点类似于回溯模版的第一步，比那里所有的可能性。但难点在于怎么确定状态所表示的意义。我理解这种状态应该具有一种“归一”性质，即当下的状态可以推导出下一状态，换句话说，当下的状态具有归纳之前状态的特性。
+就本题而言，我们建立一个二维数组dp[i][w],状态的含义是到i这个数量为止当前容量下的最大价值。比如说dp[3][5]=6的意思就是在选择前3个物体容量控制在5的时候，最大价值是6。
+        
