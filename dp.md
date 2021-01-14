@@ -191,7 +191,18 @@ print(compute(C,S))
 叶丽丽：[474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)
 
 ```python
-
+class Solution(object):
+    def findMaxForm(self, strs, m, n):
+        dp = [[[0] * (n + 1) for _ in range(m + 1)] for _ in range(len(strs) + 1)]
+        for i in range(1, len(strs) + 1):
+            ones = strs[i - 1].count("1")
+            zeros = strs[i - 1].count("0")
+            for j in range(m + 1):
+                for k in range(n + 1):
+                    dp[i][j][k] = dp[i - 1][j][k]
+                    if j >= zeros and k >= ones and dp[i][j][k]<dp[i - 1][j - zeros][k - ones] + 1:
+                        dp[i][j][k] = dp[i - 1][j - zeros][k - ones] + 1
+        return dp[-1][-1][-1]
 ```
 
 李达: [指 Offer 63. 股票的最大利润](https://leetcode-cn.com/problems/gu-piao-de-zui-da-li-run-lcof/)
@@ -256,5 +267,9 @@ def fun(strs):
 ```
 
 李达: [1143. 最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
+
+```python
+
+```
 
 ### 2021.1.16
