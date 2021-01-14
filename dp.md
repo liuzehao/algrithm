@@ -140,6 +140,7 @@ print(ss.permute([1,2,3,4]))
 这题是中科院博士笔试的最后一题，典型的动态规划。相当于求一个包含正负数数组的最大子数组。跟最长子上升子序列很像。
 
 ![最大子序列](./pic/longsonstr.png)
+
 核心代码就这样：
 ```python
 def longzistr(nums):
@@ -189,7 +190,9 @@ print(compute(C,S))
 
 叶丽丽：[474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)
 
+```python
 
+```
 
 李达: [指 Offer 63. 股票的最大利润](https://leetcode-cn.com/problems/gu-piao-de-zui-da-li-run-lcof/)
 
@@ -211,6 +214,7 @@ class Solution:
 刘泽豪：0-1背包
 题目描述：有n个物品，它们有各自的体积和价值，现有给定容量的背包，如何让背包里装入的物品具有最大的价值总和？
 输入参数：N和W分别是物体的数量和背包能装的重量。wt数组指的是物体的重量，val指的是对应的价值。
+
 ```python
 def onezerobag(N,W,wt,val):
     dp=[[0 for i in range(W+1)] for i in range(N+1)]
@@ -225,8 +229,31 @@ print(onezerobag(3,4,[2,1,3],[4,2,3]))
 ```
 动规的第一步是建立一种状态并且遍历状态，这种想法有点类似于回溯模版的第一步，相当于遍历所有的可能性。但难点在于怎么确定状态所表示的意义。我理解这种状态应该具有一种“归一”性质，即当下的状态可以推导出下一状态，换句话说，当下的状态具有归纳之前状态的特性。
 就本题而言，我们建立一个二维数组dp[i][w],状态的含义是到i这个数量为止当前容量下的最大价值。比如说dp[3][5]=6的意思就是在选择前3个物体容量控制在5的时候，最大价值是6。
+第一步的难点在于如何定义dp的含义，目前有一种可能猜想是具有一个限制条件就二维,第一个for是个数的循环，第二个是限制条件的循环。如果两个限制条件就变成了三维，for循环依然第一层个数，第二第三层分别是限制条件。
+第二步是遍历所有的可能性。
+第三步是寻找状态转移。这个转移方程往往采用max这种形式。相当于回溯中的判断和递归函数的操作。第三步的难点在于找到对应的状态转移关系。
         
 叶丽丽：[416. 分割等和子集](https://leetcode-cn.com/problems/partition-equal-subset-sum/)
+
+```python
+def fun(strs):
+    n=sum(strs)
+    if(n%2!=0):
+        return False
+    else:
+        n/=2
+    dp=[[False for _ in range(n+1)] for j in range(len(strs))]#n+1:还有背包容量为0的时候
+    for i in range(len(strs)):
+        dp[i][0] = True
+    for i in range(len(strs)):
+        for j in range(1,n+1):
+            if(j-strs[i]<0):#装不下
+                t=i-1
+                dp[i][j]=dp[i-1][j]
+            else:
+                dp[i][j]=dp[i-1][j] or dp[i-1][j-strs[i]]#Amazing
+    return dp[-1][-1]
+```
 
 李达: [1143. 最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
