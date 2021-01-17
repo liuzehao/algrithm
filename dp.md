@@ -36,7 +36,7 @@ def longstr(nums):
     return compute([])
 print(longstr([10,9,25,37,101,18]))
 ```
-回溯和动态规划是一种什么样的关系？任何一种算法从本质上来讲就是枚举和选择，所以理论上任何算法都可以通过暴力枚举出来。动规之所以快在于消除了重叠子问题。所以，反过来说，任何一种算法只要含有重叠子问题并且可以通过上一状态推到下一状态，就可以使用动规来优化。
+回溯和动态规划是一种什么样的关系？任何一种算法从本质上来讲就是枚举和选择，所以理论上任何算法都可以通过暴力枚举出来。动规之所以快在于消除了重叠子问题。所以，反过来说，任何一种算法只要含有重叠子问题,即可以通过局部最值推导出全局最值，，就可以使用动规来优化。
 
 有一种错误观点：最值问题才用动态规划
 
@@ -163,7 +163,7 @@ def compute(C,S):
         dp[t]=max(nums[t],nums[t]+dp[t-1])
     return max(dp)
 print(compute(C,S))
-``` 
+```
 进一步，我们发现dp[i]的值只和dp[i-1]相关。也就是说：
 [-10,10,-5,2,3]
 这个数组的dp从上一种做法的dp为:
@@ -247,30 +247,123 @@ print(onezerobag(3,4,[2,1,3],[4,2,3]))
         
 叶丽丽：[416. 分割等和子集](https://leetcode-cn.com/problems/partition-equal-subset-sum/)
 
+(本题题解写错了，待修改)本题首先除以2判断奇偶，如果奇数肯定不行。偶数的情况下，我们可以把题目理解成：是否存在一种情况，将几个数相加正好等于数组和sum/2（下文也称为target），并且剩下的数正好也等于sum/2。从回溯的角度上看，这个问题很好做。如果从动规的角度，
+我们就得先定义dp数组的维度：本题很类似于01背包，限制条件只有一个就是达到sum/2。所以限制条件作为循环，再加上选择与否又是一个循环。因此可以判断是一个二维数组。
+然后：我们定义dp的意义，在判断是二维数组的时候我们已经发现我们将通过添加数字与否作为第一个循环，所以dp[i][t]中，i的含义就是循环的数组下标，而t的含义就是sum/2的遍历值。
+第二步：然后我们思考一些初始化值，当数量选择为0个的时候不可能达到target，所以设置为F。
+
+![全部False](./pic/416/1.png)
+
+而当target为0的时候，根据前文的定义，无论数量为多少都可以达到target，我们循环所有dp的位置，以遍历所有的可能性。此时，我们先把所有的dp设置为False。而taget为0的时候，无论多少数量都超过了taget，所以我们设置为T(这里有点难以理解？)
+
+![设置True](./pic/416/2.png)
+
+
+第三步：我们将建立状态转移的方式，也就是如何通过前面算出的值推算出后面的值。
+首先我们考虑的第一点一定是数量上的关系，当一个数放进来的时候
+
+
+
 ```python
 def fun(strs):
     n=sum(strs)
     if(n%2!=0):
         return False
     else:
-        n/=2
-    dp=[[False for _ in range(n+1)] for j in range(len(strs))]#n+1:还有背包容量为0的时候
-    for i in range(len(strs)):
+        n//=2
+    dp=[[False for _ in range(n+1)] for j in range(len(strs)+1)]
+    for i in range(len(strs)+1):
         dp[i][0] = True
-    for i in range(len(strs)):
+    for i in range(1,len(strs)+1):
         for j in range(1,n+1):
-            if(j-strs[i]<0):#装不下
-                t=i-1
+            if(j-strs[i-1]<0):
                 dp[i][j]=dp[i-1][j]
             else:
-                dp[i][j]=dp[i-1][j] or dp[i-1][j-strs[i]]#Amazing
+                dp[i][j]=dp[i-1][j] or dp[i-1][j-strs[i-1]]
     return dp[-1][-1]
+print(fun([1, 5, 11, 5]))
 ```
 
 李达: [1143. 最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
 ```python
+def longestCommonSubsequence(text1, text2):
+    m=len(text1)
+    n=len(text2)
+    dp=[[0 for i in range(n+1)] for i in range(m+1)]
+    for i in range(1,m+1):
+        for t in range(1,n+1):
+            if text1[i-1]==text2[t-1]:
+                dp[i][t]=dp[i-1][t-1]+1
+            else:
+                dp[i][t]=max(dp[i-1][t],dp[i][t-1])
+    return dp[m][n]
 
+print(longestCommonSubsequence("abcde","ace"))
 ```
 
 ### 2021.1.16
+
+叶丽丽：[518. 零钱兑换 II](https://leetcode-cn.com/problems/coin-change-2/)
+
+本题是一道完全背包的问题，完全背包和01背包的区别在于完全背包中物体的数量是没有限制的。
+
+李达：[72.编辑距离](https://leetcode-cn.com/problems/edit-distance/)
+[题解](https://www.jianshu.com/p/02561842fedd)
+
+刘泽豪:[10. 正则表达式匹配](https://leetcode-cn.com/problems/regular-expression-matching/)
+
+这道题特别考验动规寻找状态转移方程的能力，本题和它的变种在笔试面试中出现的评率特别高。
+
+    由于是两个字符串之间寻找关系，这题的dp设定跟1143. 最长公共子序列一样，dp设置二维数组dp[i][j]，含义是s的前i个是否能被p的前j个匹配。区别是本题的分类是相当的多。所以第二步遍历dp就是双重for循环，外循环是遍历s，内循环是遍历p的可能。
+
+1.首先先分析“.”的情况：我们可以发现"."和匹配上了是一样的，即
+
+    p[j]==s[i] or p[j]==".":dp[i][j]=dp[i-1][j-1]
+
+2.然后分析“*”的情况，分成两种情况讨论
+    首先给了 \*，明白 \* 的含义是 匹配零个或多个前面的那一个元素，所以要考虑他前面的元素 p[j-1]。\* 跟着他前一个字符走，前一个能匹配上s，\* 才能有用，前一个都不能匹配上 s，\* 也无能为力。
+
+```
+2.1 如果说p[j-1]==s[i]:
+    我们发现两种情况：
+  2.1.1 比如aac,aac* ：p[j]==*,s[i]==c ;这时候我们dp[i][j]=dp[i][j-2]
+
+  2.1.2 比如 aacccccccc,aac*:p[j]==*,s[i]==c（最后一个c）;这时候dp[i][j]=dp[i-1][j]
+
+2.2 如果说p[j-1]!=s[i]:
+  
+    比如说aac,aacb*:p[j]==*,s[i]==c;这时候dp[i][j]=dp[i][j-2]
+```
+```python
+class Solution:
+    def isMatch(self, s,p):
+        if not p: return not s
+        if not s and len(p) == 1: return False 
+        nrow = len(s) + 1
+        ncol = len(p) + 1
+
+        dp = [[False for c in range(ncol)] for r in range(nrow)]
+        
+        dp[0][0] = True
+
+        for c in range(2, ncol):
+            j = c-1
+            if p[j] == '*': dp[0][c] = dp[0][c-2]#主要解决p为,a*，a*a*这种其实可以匹配空
+        for r in range(1, nrow):
+            i = r-1
+            for c in range(1, ncol):
+                j = c-1
+                if s[i] == p[j] or p[j] == '.':
+                    dp[r][c] = dp[r-1][c-1]
+                elif p[j] == '*':
+                    if p[j-1] == s[i] or p[j-1] == '.':
+                        dp[r][c] = dp[r-1][c] or dp[r][c-2]
+                    else:
+                        dp[r][c] = dp[r][c-2]
+                else:
+                    dp[r][c] = False
+        return dp[nrow-1][ncol-1]
+ss=Solution()
+print(ss.isMatch("aacccc","aac*"))# aac,aac*
+```
