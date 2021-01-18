@@ -367,3 +367,102 @@ class Solution:
 ss=Solution()
 print(ss.isMatch("aacccc","aac*"))# aac,aac*
 ```
+
+### 2021.1.18
+叶丽丽：[322.零钱兑换](https://leetcode-cn.com/problems/coin-change/)
+```python
+#322零钱兑换
+class Solution(object):
+    def coinChange(self, coins, amount):
+        # coin=sorted(coins)
+        # if amount == 0:
+        #     return 0
+        dp = [[1000 for _ in range(amount + 1)] for _ in range(len(coins) + 1)]
+        for i in range(len(coins) + 1):
+            dp[i][0] = 0
+        for i in range(1,len(coins)+1):
+            for j in range(1,amount+1):
+                if(j>=coins[i-1]):
+                    dp[i][j]=min(dp[i-1][j],dp[i][j-coins[i-1]]+1)
+                else:
+                    dp[i][j]=dp[i-1][j]
+        if dp[-1][-1]==1000 :
+            return -1
+        else:
+            return dp[-1][-1]
+```
+李达：[32. 最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)
+
+```python
+#32. 最长有效括号
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        dp = [0]*len(s)
+        res = 0
+        for i in range(1,len(s)):
+            #加在右边
+            if s[i]==')' and s[i-1]=='(':
+                dp[i] = dp[i-2]+2
+            #括到中间
+            if s[i]==s[i-1]==')' and s[i-dp[i-1]-1]=='(' and i>dp[i-1] : #i>dp[i-1]处理边界
+                dp[i] = dp[i-1]+dp[i-dp[i-1]-2]+2
+            if dp[i]>res:
+                res=dp[i]
+        return res
+```
+[22.括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
+```python
+#22.括号生成
+class Solution:
+    def generateParenthesis(self, n: int):
+        #回溯法
+        '''res = []
+        def func(temp,l,r):
+            if len(temp)==2*n:
+                res.append(''.join(temp))
+                return
+            if l<n:
+                func(temp+['('],l+1,r)
+            if r<l:
+                func(temp+[')'],l,r+1)
+        func([],0,0)
+        return res'''
+        
+        #动规解法
+        #从dp[i-1]转移到dp[i],新增一个括号，括住了m个括号,有k=i-1-m个括号放右边
+        #dp[i]="("+dp[m]+")"+dp[k]
+        #其中m+k=i-1
+        if n == 0:
+            return []
+        dp = [[''],["()"]]
+        for i in range(2,n+1):    # 开始计算i组括号时的括号组合
+            temp = []        
+            for m in range(i):    # 开始从0到n-1遍历m ，其中m+k=i-1 作为索引
+                list1 = dp[m]        # m个括号时组合情况
+                list2 = dp[i-1-m]    # k = (i-1) - m 时的括号组合情况
+                for k1 in list1:  
+                    for k2 in list2:
+                        el = "(" + k1 + ")" + k2
+                        temp.append(el)    # 把所有可能的情况添加到 temp 中
+            dp.append(temp)    # 这个temp就是i组括号的所有情况
+        return dp[n]
+```
+
+### 2021.1.18
+刘泽豪：[120. 三角形最小路径和
+](https://leetcode-cn.com/problems/triangle/)
+
+```python
+class Solution:
+    def minimumTotal(self, triangle):
+        n=len(triangle)
+        dp=[[0 for t in range(n)] for i in range(n)]
+        dp[-1]=triangle[-1]
+        for z in range(n-1,-1,-1):
+            t=len(triangle[z])
+            for u in range(t-1):
+                dp[z-1][u]=min(dp[z][u],dp[z][u+1])+triangle[z-1][u]
+        return dp[0][0]
+ss=Solution()
+print(ss.minimumTotal([[2],[3,4],[6,5,7],[4,1,8,3]]))
+```
