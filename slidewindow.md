@@ -98,7 +98,30 @@ def strfind(s,p):
 
 print(strfind("abccecdt","ce"))
 ```
+对于子串，固定滑窗的大小遍历复杂度更加低。
+```python
+#References to DaLi 2021.1.19 
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        res = []
+        n = len(p)
+        d1 = dict(Counter(p))
+        d2 = dict(Counter(s[:n]))
+        for i in d2:
+            if i in d1:
+                d1[i]-=d2[i]
+        for j in range(len(s)-n+1):
+            if max(d1.values())==0:
+                res.append(j)
+            if j==len(s)-n: #右窗口到达边界，不再进行下面操作
+                continue
+            if s[j] in d1:
+                d1[s[j]]+=1
+            if s[j+n] in d1:
+                d1[s[j+n]]-=1
+        return res
 
+```
 ## [例四.字符串的排列](https://leetcode-cn.com/problems/permutation-in-string/)
 ```python
 class Solution:
