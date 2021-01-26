@@ -33,7 +33,7 @@ def quicksort(arr,left,right):
         quicksort(arr,q+1,right)
         quicksort(arr,left,q-1)
     return arr
-arr=[6, 12, 27, 34, 21, 4, 9, 8, 11, 54, 39, 7, 3] 
+arr=[6, 12, 27, 34, 21, 4, 9, 8, 11, 54, 3, 7, 39] 
 print(quicksort(arr,0,len(arr)-1))
 ```
 
