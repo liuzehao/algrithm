@@ -31,6 +31,7 @@ if __name__ == "__main__":
     ss.printf(root3)
 ```
 
+## 根据遍历所衍生
 ## [102. 二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)[Liu]
 层序遍历是不能用递归来写的，这做这道题之前我们先看广度优先遍历。
 ```python
@@ -102,3 +103,8 @@ class Solution:
 ss=Solution()
 print(ss.levelOrder(root))
 ```
+
+## 根据树高所衍生
+[543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+
+[104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)[Liu]
