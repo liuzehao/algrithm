@@ -40,3 +40,17 @@ student.sort(key=lambda student: student[2])
 
 ## 滑动窗口
 ### 1.滑动窗口和动规有什么联系和区别呢，两者的题型看上去很相似
+
+
+## 快排
+### 1.counter的用法
+```python
+import collections
+str1=['a','a','b','d']
+m=collections.Counter(str1)
+print(m)
+
+str2=['你','好','你','你']
+m1=collections.Counter(str2)
+print(m1)
+```
