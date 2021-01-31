@@ -3,7 +3,7 @@
 
 [347. 前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
 ## 快排：
-快排思路其实很简单。
+快排思路：
 1.利用partition函数在数组中找到一个mid下标，通过移动元素，使得mid左边的元素都比mid小，右边的都比mid大。
 
 2.递归对mid左边和右边的元素进行快速排序
@@ -155,12 +155,22 @@ if __name__=="__main__":
 ```
 
 ## 堆排：
+堆：
+数据结构里面的堆指的是一种完全二叉树结构，这和操作系统内存中的堆是不同的。从堆的底层结构来讲既可以是数组，也可以是树结构，针对排序问题中的堆结构，二者是可以相互转换的，转换关系从下图可以看出来：
+
+![heap](pic/sorted/heap.png)
+
+由于是完全二叉树，父节点和子节点存在某种关系，即父节点为i，i\*2+1为左节点，i\*2+2为右节点。
+
+排序：
+堆排的原理和[动图](https://www.runoob.com/w3cnote/heap-sort.html)。从代码的角度讲，我们将堆排的过程分成两部分，第一部分是自下而上调整堆，找出最小（大）的数。第二部分是将最小（大）的数和最后一个数进行交换，确定了最后一个数之后重新自上而下调整堆。
 ```python
+#调整的方法很简单，找到最底层的父节点，交换成最小（大），然后自底向上不断调整。
 def HeapAdjust(lst,k,n):
-    while(2*k+1<n):
+    while(2*k+1<n):#第一步是找到当前最小的父节点k，如果k的子节点还是父节点且需要调整也需要调整子节点的顺序。这里要和break配合的
         j=2*k+1
-        if j+1<n and lst[j]>lst[j+1]:
-            j=j+1
+        if j+1<n and lst[j]>lst[j+1]:#注意这里的j+1<n不仅仅因为保护数组不越界，而且在自上而下调整的时候保证了j+1不会超过排好的序列
+            j=j+1           #j是左右节点中较大（小）的
         if lst[j]<lst[k]:
             temp=lst[k]
             lst[k]=lst[j]
@@ -169,18 +179,20 @@ def HeapAdjust(lst,k,n):
         else:
             break
     return lst
+
 def HeapSort(lst):
     n=len(lst)
     for i in range(int(n/2)-1,-1,-1):
-        lst=HeapAdjust(lst,i,n)
+        lst=HeapAdjust(lst,i,n)#对于第一部分而言最需要记忆的是两种调整的参数的区别，第一个从下到上需要输入节点，和长度n
     for i in range(n-1,0,-1):
         lst[0],lst[i]=lst[i],lst[0]
-        lst=HeapAdjust(lst,0,i)
+        lst=HeapAdjust(lst,0,i)#第二个输入根节点0，长度i其实是变化的
     return lst
 a=[1,5,2,8,3,4,6,9,7]
 result=HeapSort(a)
 print(result)
 ```
+
 
 堆topk:
 
