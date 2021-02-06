@@ -411,6 +411,7 @@ class Solution:
                 res=dp[i]
         return res
 ```
+
 [22.括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
 ```python
 #22.括号生成
