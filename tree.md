@@ -1,10 +1,169 @@
 # 树
-树的题主要是由两部分组成，其一是结构本身所引起。其中又包含两种方式，一种是计算节点。一种是根据遍历方式所引起的题目。其二是从算法衍生而来，主要是搜索，递归树。
-## 一.根据遍历所引起的题目
-## [297. 二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)
+树的题主要是由三部分组成。第一类是由树的遍历问题引起，第二类是由求树高引申而来，当然求树高本身和DFS（树的深度遍历）有关，第三类就是一些特殊的二叉树。树的题目可能会涉及到递归，栈（stack），队列（quene）。在此过程中，理解树的遍历是一切的基础。同时，我们需要明白树中的一些计算关系，比如完全二叉树父子节点关系，卡塔兰数等。整体结构如图:
+
+![tree](./pic/tree/treeall.png)
+
+## 一.遍历
+可以说树的遍历，是所有树相关题目的基础。从遍历方式的角度看，分为广度优先遍历和深度优先遍历。其中广度优先只有非递归形式，而深度遍历包含递归和非递归形式。
+
+### 1.深度优先遍历
+
+理解树的DFS递归和非递归方式是很重要的，这是一个经典的案例。帮助我们理解递归的本质，是利用系统栈进行嵌套调用，我们完全可以自己来写这个栈（非递归写法）来替代系统栈的作用。
+
+#### 1.1 递归DFS
+
+递归遍历，根据读取根节点的顺序可以分为前序，中序和后序。
+```python
+#前序遍历
+def printfDfs(root):
+    if not root: return
+    #前序遍历节点操作
+    print(root.val)
+    printfDfs(root.right)
+    printfDfs(root.left)
+#中序遍历
+def printfDfs(root):
+    if not root: return
+    printfDfs(root.right)
+    #中序遍历节点操作
+    print(root.val)
+    printfDfs(root.left)
+#后序遍历
+def printfDfs(root):
+    if not root: return
+    printfDfs(root.right)
+    printfDfs(root.left)
+    #后序遍历节点操作
+    print(root.val)
+```
+从上面DFS递归遍历我们可以发现前中后遍历的区别仅仅是节点操作的位置不同而已。但是值得注意的是前中后看似仅仅是遍历顺序的不同，但有时充分利用这种不同，可以完成一些非常不同的功能。比如下面的例题：
+
+#### 1.1.1 前序遍历例题：[合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
+
+```python
+class Solution:
+    def mergeTrees(self, root1: TreeNode, root2: TreeNode) -> TreeNode:
+        if not root1:return root2
+        if not root2:return root1
+        mergeNode=TreeNode(root1.val+root2.val)
+        mergeNode.left=self.mergeTrees(root1.left,root2.left)
+        mergeNode.right=self.mergeTrees(root1.right,root2.right)
+        return mergeNode
+```
+#### 1.1.2 后续遍历：[二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+```python
+def lowestCommonAncestor(root,p,q):
+    if root==None:return None
+    if root==p or root==q:
+        return root
+    left=lowestCommonAncestor(root.left,p,q)
+    right=lowestCommonAncestor(root.right,p,q)
+    #两个都有，根据后续遍历的特点root就是两个的前一个节点
+    if left!=None and right!=None:
+        return root
+    #两个都不存在返回none
+    if left==None and right==None:
+        return None
+    #一个存在一个不存在说明存在的那个是公共祖先
+    return right if left==None else left
+import Tree
+ss=Tree.TreeNodeTools()
+root=ss.createTreeByrow([3,5,1,6,2,0,8,'null','null',7,4],0)
+t5=root.left
+t4=root.left.right.right
+t1=root.right
+print(lowestCommonAncestor(root,t5,t4).val)
+```
+
+#### 1.2 非递归DFS
+我们将利用系统栈的递归写法改成利用自己写栈的顺序写法。
+```python
+def printfDfs(root):
+    if not root:return []
+    stack=[]
+    stack.append(root)
+    res=[]
+    while len(stack)>0:
+        temp=[]
+        for i in range(len(stack)):
+            node=stack.pop()#改成直接pop
+            temp.append(node.val)
+            if node.left:
+                stack.append(node.left)
+            if node.right:
+                stack.append(node.right)
+        res.append(temp[:])
+    return res
+```
+
+### 2. 广度优先遍历(BFS)
+首先我们先看到将非递归DFS中的stack结构替换成quene(队列)结构我们就可以实现BFS。
+```python
+import Tree
+ss=Tree.TreeNodeTools()
+root=ss.createTreeByrow([1,2,3,4,5,6,7],0)
+# ss.printf(root3)
+class Solution:
+    def levelOrder(self, root):
+        if not root:return []
+        quene=[]
+        quene.append(root)
+        res=[]
+        while len(quene)>0:
+            node=quene.pop(0)
+            res.append(node.val)
+            if node.left:
+                quene.append(node.left)
+            if node.right:
+                quene.append(node.right)
+        return res
+ss=Solution()
+print(ss.levelOrder(root))
+```
+我们可以理解一下为什么广度优先遍历不存在递归写法，而深度优先存在？理由就是进程中存在系统栈而不存在系统队列这种结构，函数调用利用的是栈，所以我们可以利用系统栈实现递归调用。而在广度优先遍历这种需要用到队列的问题中，递归就无能为力了。
+
+### 3. 层序遍历
+接着我们来看层序遍历，我们要区分开BFS和层序遍历的区别。层序遍历是将每一层的结果单独放置在一个list中的，比如说广度优先的树是[1,2,3,4,5],那么层序遍历的输出就是[[1],[2,3],[4,5]]。同时这也是leetcode上的一道题目。
+
+#### [102. 二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+
+层序遍历是在广度优先的基础上改的，利用list的特性我们来改造广度优先为层序遍历：
+```python
+import Tree
+ss=Tree.TreeNodeTools()
+root=ss.createTreeByrow([1,2,3,4,5,6,7],0)
+class Solution:
+    def levelOrder(self, root):
+        if not root:return []
+        stack=[]
+        stack.append(root)
+        res=[]
+        while len(stack)>0:
+            temp=[]
+            for i in range(len(stack)):
+                node=stack.pop(0)
+                temp.append(node.val)
+                if node.left:
+                    stack.append(node.left)
+                if node.right:
+                    stack.append(node.right)
+            res.append(temp[:])
+        return res
+ss=Solution()
+print(ss.levelOrder(root))
+```
+事实上我们看待我们仅仅在层序遍历的基础上多添加了一个循环，就起到了神奇的效果。
+
+### 4. 二叉树的建立和对应的遍历
 在面试过程中二叉树，我们往往需要先手写建立二叉树，然后才能验证我们写的算法正确性。所以学会二叉树的建立是很重要的，二叉树的遍历分为深度优先遍历（DFS）和广度优先遍历。通过二叉树的序列化和反序列化，我们可以学习典型的二叉树建立方式。
-下面我们采用DFS的三种方式来序列化和反序列化二叉树。
-1.1 广度优先遍历：在这个说明问题之前，我们要先注意两个问题
+
+#### [297. 二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)
+下面我们分别采用BFS和DFS的三种方式来序列化和反序列化二叉树。
+
+4.1 广度优先遍历：
+
+在这个说明问题之前，我们要先注意两个问题
 问题一：leetcode通常采用层序遍历来表达二叉树，字符串和二叉树结构的对应关系与官方文档上并不一致
 [二叉树测试用例意义官方解释](https://support.leetcode-cn.com/hc/kb/article/1194353/)
 事实上输入用例是遍历到最后一个None的位置的，比如：
@@ -73,117 +232,221 @@ null null null null-----到这层为止
             i += 1
         return root
 ```
-同时我们要注意，只有完全二叉树具有反序列化的递归写法。想想是为什么？其实完全二叉树具有递归的形式，而普通二叉树并不是递归的。
-
-1.2 深度优先遍历
-
-
-
-## 二叉树的建立
+完整代码：
 ```python
 class TreeNode:
-    def __init__(self,x):
+    def __init__(self,x=0):
         self.val=x
         self.left=None
         self.right=None
-    #打印树
-class TreeNodeTools:
-    def printf(self,root):
-        print(root.val)
-        if root.right:
-            self.printf(root.right)
-        if root.left:
-            self.printf(root.left)
-    #行序遍历建树
-    def createTreeByrow(self,llist,i):
-        if llist[i]=='null':
-            return
-        root=TreeNode(llist[i])
-        if i*2+1<len(llist):
-            root.left=self.createTreeByrow(llist,i*2+1)
-        if i*2+2<len(llist):
-            root.right=self.createTreeByrow(llist,i*2+2)
+class Codec:
+    def serialize(self, root):
+        if not root: return "[]"
+        queue = []
+        queue.append(root)
+        res = []
+        while queue:
+            node = queue.pop(0)
+            if node:
+                res.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else: res.append("null")
+        return '[' + ','.join(res) + ']'
+
+    def deserialize(self, data):
+        if data=='[]':
+            return None
+        vals, i = data[1:-1].split(','), 1
+        root = TreeNode(int(vals[0]))
+        queue = []
+        queue.append(root)
+        while queue:
+            node = queue.pop(0)
+            if vals[i] != "null":
+                node.left = TreeNode(int(vals[i]))
+                queue.append(node.left)
+            i += 1
+            if vals[i] != "null":
+                node.right = TreeNode(int(vals[i]))
+                queue.append(node.right)
+            i += 1
         return root
-if __name__ == "__main__":
-    ss=TreeNodeTools()
-    root3=ss.createTreeByrow([5,4,8,11,'null',13,4,7,2,'null','null',5,1],0)
-    ss.printf(root3)
+ser = Codec()
+deser = Codec()
+root=deser.deserialize("[1,2,3,null,null,4,5,null,null,null,null]")
+ans=ser.serialize(root)
+print(ans)
+print(deser.deserialize(ans))
+```
+同时我们要注意，只有完全二叉树具有反序列化的递归写法。想想是为什么？其实完全二叉树具有递归的形式，而普通二叉树并不是递归的。
+
+4.2 深度优先遍历（待有空更新）
+
+4.2.1 前序建树及对应的遍历
+```python
+
 ```
 
-## 根据遍历所衍生
-## [102. 二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)[Liu]
-层序遍历是不能用递归来写的，这做这道题之前我们先看广度优先遍历。
+4.2.2 中序建树及对应的遍历
 ```python
-import Tree
-ss=Tree.TreeNodeTools()
-root=ss.createTreeByrow([1,2,3,4,5,6,7],0)
-# ss.printf(root3)
+
+```
+
+4.2.3 后序建树及对应的遍历
+```python
+
+```
+
+## 二.树高
+### 2.1 求树高
+我们通常利用DFS的递归遍历方式求解树高。之所以把求树高的问题单独列出来，而不是归类到DFS中，是因为求树高的过程有一些颇难理解的地方，涉及到递归过程的返回值问题。比如下面这个求树高的典型代码：
+
+```python
+def deeptree(root):
+    if not root:return 0
+    left=deeptree(root.left)
+    right=deeptree(root.right)
+    return max(left,right)+1
+```
+
+![treehigh](./pic/tree/treehigh.png)
+上图展示了二叉树递归求高的前3个递归结果，可以看出在叶子节点为空的时候left,right接受return 0的返回值，而在非叶子节点接受max(left,right)+1的会返回值。
+
+### 2.2 经典例题
+[104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
+
+[543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)[Liu]
+
+题解见./hot100
+
+
+
+## 三.特殊二叉树
+特殊的二叉树结构同样是考察的重点。这些树难度要求不一，比如前缀树如果没有做过是极难想到的；又比如红黑树我们必须了解其前世今生，但对实现不必苛求。
+
+### 3.1 前缀树
+前缀树是一种利用字典结构实现的多叉树，它跟其他树（n叉树,n>1）在数据结构层面有本质上的区别。
+```python
+class Trie:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lookup = {}
+        
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        tree = self.lookup
+        for a in word:
+            if a not in tree:
+                tree[a] = {}
+            tree = tree[a]
+        # 单词结束标志
+        tree["#"] = "#"
+        
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        tree = self.lookup
+        for a in word:
+            if a not in tree:
+                return False
+            tree = tree[a]
+        if "#" in tree:
+            return True
+        return False
+        
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        tree = self.lookup
+        for a in prefix:
+            if a not in tree:
+                return False
+            tree = tree[a]
+        return True
+trie=Trie()
+trie.insert("apple")
+trie.insert("appue")
+print(trie.startsWith("appu"))
+```
+用到了前缀树的题目：
+
+[211. 添加与搜索单词 - 数据结构设计](https://leetcode-cn.com/problems/design-add-and-search-words-data-structure/)
+
+[212. 单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)
+
+[421. 数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)
+
+### 3.2 线索二叉树
+建立线索二叉树，或者说对二叉树线索化，实质上就是遍历一棵二叉树。在遍历过程中，访问结点的操作是检查当前的左，右指针域是否为空，将它们改为指向前驱结点或后续结点的线索。这个树主要是用在这题上：
+
+[114. 二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)
+
+我们可以看一下二叉树线索化的代码：
+```python
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        curr = root
+        while curr:
+            if curr.left: #存在左结点,即右结点存在前驱
+                pre = nxt = curr.left
+                #寻找前驱结点，在左子树的最右边(最后)
+                while pre.right:
+                    pre = pre.right
+                pre.right = curr.right #右结点与前驱结点连接
+                curr.left = None
+                curr.right = nxt
+            curr = curr.right
+```
+
+### 3.3 完全二叉树
+完全二叉树最大的特点是:父节点root和左右子节点具有索引下标的联系，因此任意一个线性结构均可看作是完全二叉树。而如果这个完全二叉树满足子节点均小于（大于）父节点，那么这棵二叉树就是大根堆（小根堆）。所以完全二叉树的题多以堆的形式考察。此处放一题：[958. 二叉树的完全性检验](https://leetcode-cn.com/problems/check-completeness-of-a-binary-tree/)
+
+```python
 class Solution:
-    def levelOrder(self, root):
-        if not root:return []
+    def isCompleteTree(self, root: TreeNode) -> bool:
         quene=[]
-        quene.append(root)
-        res=[]
+        quene.append((root,1))
+        temp=[1]
         while len(quene)>0:
-            node=quene.pop(0)
-            res.append(node.val)
-            if node.left:
-                quene.append(node.left)
-            if node.right:
-                quene.append(node.right)
-        return res
-ss=Solution()
-print(ss.levelOrder(root))
-
-```
-将队列改成栈就是深度优先：
-```python
-class Solution:
-    def levelOrder(self, root: TreeNode) -> List[List[int]]:
-        if not root:return []
-        stack=[]
-        stack.append(root)
-        res=[]
-        while len(stack)>0:
-            temp=[]
-            for i in range(len(stack)):
-                node=stack.pop()#改成直接pop
-                temp.append(node.val)
+            for i in range(len(quene)):
+                node,po=quene.pop(0)
+                temp.append(po)
                 if node.left:
-                    stack.append(node.left)
+                    quene.append((node.left,2*po))
                 if node.right:
-                    stack.append(node.right)
-            res.append(temp[:])
-        return res
+                    quene.append((node.right,2*po+1))
+        for i in range(len(temp)-1):
+            if temp[i+1]-temp[i]>1:
+                return False
+        return True
 ```
-利用list的特性来改造成层序遍历：
-```python
-import Tree
-ss=Tree.TreeNodeTools()
-root=ss.createTreeByrow([1,2,3,4,5,6,7],0)
-# ss.printf(root3)
-class Solution:
-    def levelOrder(self, root):
-        if not root:return []
-        stack=[]
-        stack.append(root)
-        res=[]
-        while len(stack)>0:
-            temp=[]
-            for i in range(len(stack)):
-                node=stack.pop(0)
-                temp.append(node.val)
-                if node.left:
-                    stack.append(node.left)
-                if node.right:
-                    stack.append(node.right)
-            res.append(temp[:])
-        return res
-ss=Solution()
-print(ss.levelOrder(root))
-```
+从答案可以看出使用层序遍历的方式进行修改而来。
 
-## 根据树高所衍生
-[543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+### 3.4 搜索二叉树
+另一个比较常用的特殊二叉树是搜索二叉树。
+[96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
+什么是二叉搜索树？
+二叉搜索树是一种节点值之间具有一定数量级次序的二叉树，对于树中每个节点：
+若其左子树存在，则其左子树中每个节点的值都不大于该节点值；
+若其右子树存在，则其右子树中每个节点的值都不小于该节点值。
+我们可以想想【1，2，3，4，5】这样一个数组有几种可能性。我们只需要分别以数组中的数作为根节点，然后将左右分别组成搜索二叉树即可，所以整个程序是一个递归的程序。
+题解见./hot100
+本题有还有卡塔兰数解法。
+进阶题是：
+[不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)
 
-[104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)[Liu]
+### 3.5 平衡二叉树
+平衡二叉树的调整是面试常考的问题，而由此衍生的红黑树属于面试必问问题，我至今没有经历过一家公司的面试不问红黑树的，只是问的深浅问题。
+
+#### 3.5.1 红黑树
+
+#### 3.5.2 B树和B+树
