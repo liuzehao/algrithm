@@ -349,6 +349,9 @@ def deeptree(root):
 
 ### 3.1 前缀树
 前缀树是一种利用字典结构实现的多叉树，它跟其他树（n叉树,n>1）在数据结构层面有本质上的区别。
+
+[208. 实现 Trie (前缀树)](https://leetcode-cn.com/problems/implement-trie-prefix-tree/)
+
 ```python
 class Trie:
     def __init__(self):
