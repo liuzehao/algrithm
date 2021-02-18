@@ -36,8 +36,18 @@ def longstr(nums):
     return compute([])
 print(longstr([10,9,25,37,101,18]))
 ```
-回溯和动态规划是一种什么样的关系？任何一种算法从本质上来讲就是枚举和选择，所以理论上任何算法都可以通过暴力枚举出来。动规之所以快在于消除了重叠子问题。所以，反过来说，任何一种算法只要含有重叠子问题,即可以通过局部最值推导出全局最值，，就可以使用动规来优化。
-
+回溯和动态规划是一种什么样的关系？任何一种算法从本质上来讲就是枚举和选择，所以理论上任何算法都可以通过暴力枚举出来。动规之所以快在于消除了重叠子问题。所以，反过来说，任何一种算法只要含有重叠子问题,即可以通过局部最值推导出全局最值，就可以使用动规来优化。
+相似题：[53. 最大子序和](https://leetcode-cn.com/problems/maximum-subarray/)
+```python
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        if len(nums)==1:return nums[0]
+        if len(nums)==0:return []
+        dp=[-float("inf") for i in range(len(nums)+1)]
+        for i in range(1,len(nums)+1):
+            dp[i]=max(nums[i-1],dp[i-1]+nums[i-1])
+        return max(dp)
+```
 有一种错误观点：最值问题才用动态规划
 
 [动态规划只需要求我们评估最优解是多少，最优解对应的具体解是什么并不要求。因此很适合应用于评估一个方案的效果](https://leetcode-cn.com/problems/permutations/solution/quan-pai-lie-hui-su-suan-fa-by-cherry-n1/)
@@ -467,4 +477,39 @@ class Solution:
         return dp[0][0]
 ss=Solution()
 print(ss.minimumTotal([[2],[3,4],[6,5,7],[4,1,8,3]]))
+```
+
+### 2021.2.18
+[70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/submissions/)
+这题采用递归超时，后通过dp打表的方法优化了一下，根据算法导论对dp的描述，属于最基本的自顶向下动规。
+```python
+#直接递归超时
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        res=0
+        def dfs(n):
+            nonlocal res
+            if n<=1:return 1
+            elif n==2:return 2
+            return res+self.climbStairs(n-2)+self.climbStairs(n-1)
+        return dfs(n)
+ss=Solution()
+print(ss.climbStairs(4))
+```
+```python
+#打表优化
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        dp=[0 for i in range(n+1)]
+        dp[0]=1
+        dp[1]=1
+        dp[2]=2
+        def dfs(n):
+            if dp[n]!=0:return dp[n]
+            dp[n-2]=dfs(n-2)
+            dp[n-1]=dfs(n-1)
+            return dp[n-2]+dp[n-1]
+        return dfs(n)
+ss=Solution()
+print(ss.climbStairs(3))
 ```
