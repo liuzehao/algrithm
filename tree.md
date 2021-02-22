@@ -176,6 +176,9 @@ ss=Solution()
 print(ss.levelOrder(root))
 ```
 事实上我们看待我们仅仅在层序遍历的基础上多添加了一个循环，就起到了神奇的效果。
+注意：本题中“for i in range(len(stack)):”这一行采用了range函数，如果采用“for i in stack:”这个方法结果就不一样了。前者"[[1], [2, 3], [4, 5]]",后者"[[1, 2, 3], [4, 5]",原因是python中list具有全局特性，后面append会影响for循环。
+而采用range之后仅仅记录了一个临时变量，不会因为append而改变。
+
 
 ### 4. 二叉树的建立和对应的遍历
 在面试过程中二叉树，我们往往需要先手写建立二叉树，然后才能验证我们写的算法正确性。所以学会二叉树的建立是很重要的，二叉树的遍历分为深度优先遍历（DFS）和广度优先遍历。通过二叉树的序列化和反序列化，我们可以学习典型的二叉树建立方式。
@@ -340,6 +343,7 @@ def deeptree(root):
 
 [543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)[Liu]
 
+[124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)[Liu]
 题解见./hot100
 
 
