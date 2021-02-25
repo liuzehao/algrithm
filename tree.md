@@ -101,6 +101,8 @@ print(lowestCommonAncestor(root,t5,t4).val)
 #### 1.2 非递归DFS
 我们将利用系统栈的递归写法改成利用自己写栈的顺序写法。
 ```python
+
+#非递归前序遍历
 def printfDfs(root):
     if not root:return []
     stack=[]
@@ -117,6 +119,8 @@ def printfDfs(root):
                 stack.append(node.right)
         res.append(temp[:])
     return res
+#非递归中序遍历
+
 ```
 
 ### 2. 广度优先遍历(BFS)
