@@ -36,8 +36,7 @@ def printfDfs(root):
     #后序遍历节点操作
     print(root.val)
 ```
-从上面DFS递归遍历我们可以发现前中后遍历的区别仅仅是节点操作的位置不同而已。但是值得注意的是前中后看似仅仅是遍历顺序的不同，但有时充分利用这种不同，可以完成一些非常不同的功能。比如下面的例题：
-
+从上面DFS递归遍历我们可以发现前中后遍历的区别仅仅是节点操作的位置不同而已。
 #### 1.1.1 遍历例题：
 [合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
 
@@ -72,6 +71,8 @@ ss=Solution()
 print(ss.buildTree([1,2,4,5,3,6,7],[4,2,5,1,6,3,7]))
 ```
 
+但是值得注意的是前中后看似仅仅是遍历顺序的不同，但有时充分利用这种不同，可以完成一些非常不同的功能。比如下面的例题：
+
 #### 1.1.2 必须后续遍历：[二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 ```python
@@ -96,6 +97,82 @@ t5=root.left
 t4=root.left.right.right
 t1=root.right
 print(lowestCommonAncestor(root,t5,t4).val)
+```
+
+#### 必须前序遍历: 1.1.3 [226. 翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)[Liu]
+
+```python
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:return None
+        root.left,root.right=root.right,root.left
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        return root
+```
+#### 必须中序遍历：1.1.4 [538. 把二叉搜索树转换为累加树](https://leetcode-cn.com/problems/convert-bst-to-greater-tree/)[Liu]
+
+```python
+class Solution:
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        pre=0
+        def dfs(root):
+            nonlocal pre
+            if not root:return
+            dfs(root.right)
+            root.val=root.val+pre
+            pre=root.val
+            dfs(root.left)
+            return root
+        return dfs(root)
+```
+
+接下来两道例题展示了dfs解题的一个难点，也是写递归的最大的难点：如何设计判断return
+
+[101. 对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)[Liu]
+虽然一看就是dfs,在进行递归判断的时候还是要花点功夫的。
+```python
+from Tree import TreeNode,TreeNodeTools
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:return True
+        def dfs(right,left):
+            if not right and not left:#这个代表遍历到底了
+                return True
+            if not right or not left:#这个代表其中一个树为空节点
+                return False
+            if right.val!=left.val:#这个代表两个对应节点的值不一样
+                return False
+            return dfs(left.right,right.left) and dfs(left.left,right.right)
+        return dfs(root.right,root.left)
+
+tools=TreeNodeTools()
+root=tools.createTreeByrow("[1,2,2,2,null,2,null,null,null,null,null]")#这个就是典型的问题，后面null没有补全
+ss=Solution()
+print(ss.isSymmetric(root))
+```
+
+[98. 验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)[Liu]
+一看就dfs中序遍历，遍历的顺序是左根右，我们需要记录当前节点的前一个节点，只要保证前一个节点的值大于当前节点就是二叉树。
+```python
+from Tree import TreeNode,TreeNodeTools
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        pre=-float("inf")
+        def dfs(root):
+            nonlocal pre
+            if not root:return True
+            if not dfs(root.left):
+                return False
+            if root.val<=pre:
+                return False
+            pre=root.val
+            return dfs(root.right)
+        return dfs(root)
+ss=Solution()
+tools=TreeNodeTools()
+root3=tools.createTreeByrow("[5,1,7,null,null,6,9,null,null,null,null]")
+print(ss.isValidBST(root3))
 ```
 
 #### 1.2 非递归DFS
