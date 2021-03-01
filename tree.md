@@ -196,8 +196,22 @@ def printfDfs(root):
                 stack.append(node.right)
         res.append(temp[:])
     return res
-#非递归中序遍历
-
+#非递归中序遍历(通过操作栈先将左节点压入栈直到左节点为空，出栈顶元素，打印，当没有左结点时，将当前节点的右孩子赋值给_root，依次循环)
+from Tree import TreeNode,TreeNodeTools
+def dfs_middle(root):
+    if not root:return
+    stack=[]
+    while stack or root:
+        while root:
+            stack.append(root)
+            root=root.left
+        if stack:
+            data=stack.pop()
+            root=data.right
+            print(data.val)
+ss=TreeNodeTools()
+root3=ss.createTreeByrow("[1,2,3,null,null,4,5,null,null,null,null]")
+dfs_middle(root3)
 ```
 
 ### 2. 广度优先遍历(BFS)
