@@ -506,6 +506,49 @@ print(trie.startsWith("appu"))
 [211. 添加与搜索单词 - 数据结构设计](https://leetcode-cn.com/problems/design-add-and-search-words-data-structure/)
 
 [212. 单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)
+这道题太有意思了，整合了trie树和backtracking中[单词搜索](https://leetcode-cn.com/problems/word-search/)的核心思想。但是由于本题是同时搜索多个单词，在return的选择上会有不同的变化，我们并不需要返回true还是flase了，但我们要明白不论return false还是true本质上都会终端当前的递归返回上一层。
+```python
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        root={}
+        w=len(board)
+        h=len(board[0])
+        res=[]
+        for word in words:
+            p=root
+            for i in word:
+                if i not in p:
+                    p[i]={}
+                p=p[i]
+            p['#']=word
+        def dfs(start,root):
+            i,t=start[0],start[1]
+            if '#' in root:
+                res.append(root['#'])
+                root.pop('#')
+            if i<0 or i>=w or t<0 or t>=h or board[i][t] not in root:
+                return False
+            board[i][t],temp='/',board[i][t]
+            dfs((i+1,t),root[temp]) or dfs((i,t+1),root[temp]) or dfs((i-1,t),root[temp]) or dfs((i,t-1),root[temp])
+            board[i][t]=temp
+
+        for t in range(len(board)):
+            for u in range(len(board[0])):
+                if board[t][u] in root:
+                    dfs((t,u),root)
+        return res
+#本题有几个容易错的case:
+#1.
+# [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]]
+# ["oath","pea","eat","rain","hklf", "hf"] 这个case的关键在于hklf,hf的同前缀的处理
+#2.
+ # [["o","a","b","n"],["o","t","a","e"],["a","h","k","r"],["a","f","l","v"]]
+#["oa","oaa"]
+#3.
+# [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]]
+# ["oath","pea","eat","rain","oathi","oathk","oathf","oate","oathii","oathfi","oathfii"]
+```
+
 
 [421. 数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)
 
