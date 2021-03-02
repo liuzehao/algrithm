@@ -212,6 +212,28 @@ def dfs_middle(root):
 ss=TreeNodeTools()
 root3=ss.createTreeByrow("[1,2,3,null,null,4,5,null,null,null,null]")
 dfs_middle(root3)
+
+#非递归后序遍历（双栈法）
+# 后序只要将前序用另一个栈记录下来，输出就行
+from Tree import TreeNode,TreeNodeTools
+def dfs_last(root):
+    if not root:return
+    stack1=[]
+    stack2=[]
+    stack1.append(root)
+    while stack1:
+        node=stack1.pop()
+        if node.left:
+            stack1.append(node.left)
+        if node.right:
+            stack1.append(node.right)
+        stack2.append(node)
+    while stack2:
+        data=stack2.pop()
+        print(data.val)
+ss=TreeNodeTools()
+root3=ss.createTreeByrow("[1,2,3,null,null,4,5,null,null,null,null]")
+dfs_last(root3)
 ```
 
 ### 2. 广度优先遍历(BFS)
@@ -610,10 +632,33 @@ class Solution:
 本题有还有卡塔兰数解法。
 进阶题是：
 [不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)
+卡塔兰数的递推公式：
+
+[!catalan](./pic/tree/Catalan.png)
+
+卡塔兰数的前几项：[1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862]
 
 ### 3.5 平衡二叉树
 平衡二叉树的调整是面试常考的问题，而由此衍生的红黑树属于面试必问问题，我至今没有经历过一家公司的面试不问红黑树的，只是问的深浅问题。
 
 #### 3.5.1 红黑树
+红黑树本质上是一种自平衡二叉查找树，红黑树的应用比较广泛，主要是用它来存储有序的数据，它的时间复杂度是O(lgn)，效率非常之高。
+例如，Java集合中的TreeSet和TreeMap，C++ STL中的set、map，以及Linux虚拟内存的管理，都是通过红黑树去实现的。
 
-#### 3.5.2 B树和B+树
+### 3.6 B树和B+树
+
+b树：（1）多路查找树，非二叉树
+（2）每个节点既保存索引，又保存数据
+（3）搜索时相当于二分查找
+b+树：（1）多路查找树，非二叉
+（2）只有叶子节点保存数据
+（3）搜索时相当于二分查找
+（4）增加了相邻接点的指向指针。b+树可以查范围
+非关系型用b树，速度快。关系型用b+，范围查找
+
+## 本节待研究
+其实每个领域要完全研究透，需要大量的时间和精力。受限于此，本人认为先浅后反复加深更有助于掌握。现将几个还没完全研究透的问题先记录下来：
+1.catalan数与汉诺塔、括号生成等问题具有某种数学上的联系
+2.红黑树效率很高，这是怎么做到的（算法导论有大量的讨论）
+3.b数和b+的在存储结构上有很深的应用，怎么做到的
+4.序列化和反序列化，除了层序遍历之外的做法
