@@ -631,10 +631,12 @@ class Solution:
 题解见./hot100
 本题有还有卡塔兰数解法。
 进阶题是：
+
 [不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)
+
 卡塔兰数的递推公式：
 
-[!catalan](./pic/tree/Catalan.png)
+![catalan](./pic/tree/Catalan.png)
 
 卡塔兰数的前几项：[1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862]
 
