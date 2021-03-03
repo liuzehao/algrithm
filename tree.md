@@ -573,6 +573,10 @@ class Solution:
 
 
 [421. 数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)
+解决这个问题，我们首先需要利用异或运算的一个性质：
+```
+如果 a ^ b = c 成立，那么a ^ c = b 与 b ^ c = a 均成立。[图解](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/solution/li-yong-yi-huo-yun-suan-de-xing-zhi-tan-xin-suan-f/)
+```
 
 ### 3.2 线索二叉树
 建立线索二叉树，或者说对二叉树线索化，实质上就是遍历一棵二叉树。在遍历过程中，访问结点的操作是检查当前的左，右指针域是否为空，将它们改为指向前驱结点或后续结点的线索。这个树主要是用在这题上：
@@ -597,7 +601,9 @@ class Solution:
 ```
 
 ### 3.3 完全二叉树
-完全二叉树最大的特点是:父节点root和左右子节点具有索引下标的联系，因此任意一个线性结构均可看作是完全二叉树。而如果这个完全二叉树满足子节点均小于（大于）父节点，那么这棵二叉树就是大根堆（小根堆）。所以完全二叉树的题多以堆的形式考察。此处放一题：[958. 二叉树的完全性检验](https://leetcode-cn.com/problems/check-completeness-of-a-binary-tree/)
+完全二叉树最大的特点是:父节点root和左右子节点具有索引下标的联系，因此任意一个线性结构均可看作是完全二叉树。而如果这个完全二叉树满足子节点均小于（大于）父节点，那么这棵二叉树就是大根堆（小根堆）。所以完全二叉树的题多以堆的形式考察。此处放一题：
+
+[958. 二叉树的完全性检验](https://leetcode-cn.com/problems/check-completeness-of-a-binary-tree/)
 
 ```python
 class Solution:
@@ -639,6 +645,7 @@ class Solution:
 ![catalan](./pic/tree/Catalan.png)
 
 卡塔兰数的前几项：[1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862]
+括号生成数量 就是典型的卡塔兰数
 
 ### 3.5 平衡二叉树
 平衡二叉树的调整是面试常考的问题，而由此衍生的红黑树属于面试必问问题，我至今没有经历过一家公司的面试不问红黑树的，只是问的深浅问题。
