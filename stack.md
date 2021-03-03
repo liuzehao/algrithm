@@ -2,6 +2,7 @@
 栈在数据结构中的作用远比我过去以为的重要，主要可以分为四类问题。第一类问题是利用栈本身，第二类是辅助栈，第三类是双栈，最巧妙的应用还是第四类单调栈。
 ## 一、栈的特性
 利用栈先入后出特性的题。在tree.md中我们介绍到递归是利用了系统栈进行分治操作，事实上我们可以用stack来自己写栈替换系统栈。所以我们会发现本节很多题会有两种解法，一种递归解法，一种利用栈来解题。这也验证了这两种写法的等价性，我们完全可以选择一种好理解的方式来掌握这种题。
+
 [有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)
 ```python
 class Solution:
@@ -64,7 +65,70 @@ class Solution:
         return res
 ```
 ## 单调栈
-[最大矩形]
-[柱状图中的最大矩形]
-[接雨水]
-[每日温度]
+[739. 每日温度](https://leetcode-cn.com/problems/daily-temperatures/)[Li]
+这道题构造了一个单调减的栈，去完成由于时序不一致造成的问题。
+```python
+class Solution:
+    def dailyTemperatures(self, T) :
+        res = [0 for _ in T]
+        stack = []
+        for i in range(len(T)):
+            while stack and T[i]>T[stack[-1]]:
+                topIndex = stack.pop()
+                res[topIndex]=i-topIndex
+            stack.append(i)
+        return res
+```
+[84 柱状图中最大的矩形](https://leetcode-cn.com/problems/largest-rectangle-in-histogram/)[Ye]
+
+本题用了单调栈，在左右添加0。当右边的柱子大于左边的柱子的时候入栈，当右边的柱子小于左边的柱子的时候出栈并计算面积。
+```python
+class Solution:
+    def largestRectangleArea(self, heights) -> int:
+        stack=[]
+        heights=[0]+heights+[0]
+        res=0
+        for i in range(len(heights)):
+            while stack and heights[stack[-1]] > heights[i]:
+                tmp=stack.pop()
+                res=max(res, (i - stack[-1] - 1) * heights[tmp])
+            stack.append(i)
+        return res
+```
+
+[85 最大矩形](https://leetcode-cn.com/problems/maximal-rectangle/)[Ye]
+```python
+class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        if not matrix: return 0
+        h,w=len(matrix),len(matrix[0])
+        # 记录当前位置上方连续“1”的个数
+        heights = [0] * (w + 2)
+        res = 0
+        for i in range(h):
+            for j in range(1, w + 1):
+                heights[j] = heights[j] + 1 if matrix[i][j - 1] == "1" else 0
+            # 单调栈
+            stack = []
+            for k in range(len(heights)):
+                while stack and heights[stack[-1]] > heights[k]:
+                    tmp = stack.pop()
+                    res = max(res, heights[tmp] * (k - stack[-1] - 1))
+                stack.append(k)
+        return res
+```
+[42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)[Li]
+```python
+#42.接雨水
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        stack,res = [],0
+        for i in range(len(height)):
+            while stack and height[i]>height[stack[-1]]:
+                bottom = stack.pop()
+                if not stack: break
+                res += (min(height[stack[-1]],height[i])-height[bottom])*(i-stack[-1]-1)
+            stack.append(i)
+        return res
+```
+
