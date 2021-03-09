@@ -127,7 +127,7 @@ class Solution:
         return dfs(root)
 ```
 
-接下来两道例题展示了dfs解题的一个难点，也是写递归的最大的难点：如何设计判断return
+接下来三道例题展示了dfs解题的一个难点，也是写递归的最大的难点：如何设计判断return
 
 [101. 对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)[Liu]
 虽然一看就是dfs,在进行递归判断的时候还是要花点功夫的。
@@ -174,7 +174,35 @@ tools=TreeNodeTools()
 root3=tools.createTreeByrow("[5,1,7,null,null,6,9,null,null,null,null]")
 print(ss.isValidBST(root3))
 ```
+[437. 路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/)
+双递归dfs
+```python
+from Tree import TreeNode,TreeNodeTools
 
+class Solution:
+    def __init__(self):
+        self.ans=0
+    def helper(self,node,curr):
+        if not node:
+            return 
+        if node.val==curr:
+            self.ans+=1
+
+        self.helper(node.left,curr-node.val)
+        self.helper(node.right,curr-node.val)
+
+    def pathSum(self, root: TreeNode, sum: int) -> int:
+        if not root:
+            return 0
+        self.helper(root,sum)
+        self.pathSum(root.left,sum)
+        self.pathSum(root.right,sum)
+
+        return self.ans
+ss=Solution()
+root=TreeNodeTools().createTreeByrow('[1,-2,3,1,3,-2,null,-1,null,null,null,null,null,null,null]')
+print(ss.pathSum(root,-1))
+```
 #### 1.2 非递归DFS
 我们将利用系统栈的递归写法改成利用自己写栈的顺序写法。
 ```python

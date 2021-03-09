@@ -492,4 +492,25 @@ print(ss.splitIntoFibonacci(S))
 ```
 整体逻辑其实和上一题是差不多的。
 
-[17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
+[200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/)[Li]
+回溯算法，并合集看过了也可以用来解一下
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        res = 0
+        m = len(grid)
+        n = len(grid[0])
+        def search(i,j,grid):
+            if i<0 or i>=m or j<0 or j>=n or grid[i][j]=='#' or grid[i][j]=='0':
+                return False
+            #被搜索的置为"#"    
+            grid[i][j]='#'
+            flag = search(i-1,j,grid) or search(i+1,j,grid) or search(i,j-1,grid) or search(i,j+1,grid)
+        
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]=="1":
+                    res+=1
+                    search(i,j,grid)
+        return res
+```
