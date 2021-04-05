@@ -21,7 +21,7 @@ print(ss.isValid("]"))
 
 ## 辅助栈
 [最小栈](https://leetcode-cn.com/problems/min-stack/)
-这个栈不仅仅记录value还记录索引
+没有做过这个题的话肯定是一脸懵逼，不知道这个题的目的是什么意思。这个题目的核心目的是要有一个栈，其末尾记录的是其栈中的最小值。如果是这样一个目的，我们只要将[value,当前最小值]记录下来即可。
 ```python
 class MinStack:
 
@@ -97,6 +97,8 @@ class Solution:
 ```
 
 [85 最大矩形](https://leetcode-cn.com/problems/maximal-rectangle/)[Ye]
+题解：https://leetcode-cn.com/problems/maximal-rectangle/solution/python3-qian-zhui-he-dan-diao-zhan-ji-su-vkpp/
+这个题还是没有想的特别的通畅。
 ```python
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
