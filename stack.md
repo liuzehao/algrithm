@@ -103,20 +103,22 @@ class Solution:
 ```python
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
-        if not matrix: return 0
-        h,w=len(matrix),len(matrix[0])
-        # 记录当前位置上方连续“1”的个数
-        heights = [0] * (w + 2)
-        res = 0
-        for i in range(h):
-            for j in range(1, w + 1):
-                heights[j] = heights[j] + 1 if matrix[i][j - 1] == "1" else 0
-            # 单调栈
-            stack = []
-            for k in range(len(heights)):
-                while stack and heights[stack[-1]] > heights[k]:
-                    tmp = stack.pop()
-                    res = max(res, heights[tmp] * (k - stack[-1] - 1))
+        if not matrix:return 0
+        m,n=len(matrix),len(matrix[0])
+        # 记录当前位置上方连续“1”的个数
+        pre=[0]*(n+1)
+        res=0
+        for i in range(m):
+            for j in range(n):
+                # 前缀和
+                pre[j]=pre[j]+1 if matrix[i][j]=="1" else 0
+
+            # 单调栈
+            stack=[-1]
+            for k,num in enumerate(pre):
+                while stack and pre[stack[-1]]>num:
+                    index=stack.pop()
+                    res=max(res,pre[index]*(k-stack[-1]-1))
                 stack.append(k)
         return res
 ```
