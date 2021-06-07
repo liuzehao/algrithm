@@ -99,7 +99,7 @@ class Solution:
 
 [85 最大矩形](https://leetcode-cn.com/problems/maximal-rectangle/)[Ye]
 题解：https://leetcode-cn.com/problems/maximal-rectangle/solution/python3-qian-zhui-he-dan-diao-zhan-ji-su-vkpp/
-这个题还是没有想的特别的通畅。
+这个题实在是太有意思了。可以说找到了一个一般人很难想到的角度来解决问题：就像题解中所说的，我们利用了一个stack来存储一个单调递增的数列，这个数列的作用是存储最低高度，然后关键来了。从后向前计算最低高度条件下可能达到的最大面积。实在没想到单调队列还有这样的作用！
 ```python
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
